@@ -5,6 +5,7 @@ int main() {
     int n;
     cin >> n;
 
+    // Build the tree as an adjacency list
     vector<vector<int>> adj(n+1);
     for(int i=0;i<n-1;i++) {
         int u,v;
@@ -13,6 +14,8 @@ int main() {
         adj[v].push_back(u);
     }
 
+    // dp0[u]: Max matching in subtree u if node u is NOT matched with any of its children
+    // dp1[u]: Max matching in subtree u if node u is matched with exactly one child
     vector<int> dp0(n+1), dp1(n+1);
     
     auto dfs = [&](auto&& self, int u, int p) -> void {
