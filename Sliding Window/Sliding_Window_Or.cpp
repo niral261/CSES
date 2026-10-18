@@ -9,14 +9,37 @@ int main() {
     cin >> n >> k;
     cin >> x >> a >> b >> c;
 
-    long long j = x;
-    long long res = 0;
-    long long tot = x;
-
-    for(int i=1;i<k;i++) {
-        j = (j*a + b) % c;
-        tot |= j;
+    vector<long long> arr(n);
+    for(int i=0;i<n;i++) {
+        if(i==0)
+            arr[i] = x;
+        else
+            arr[i] = (arr[i-1] * a + b) % c;
+    }
+    
+    vector<long long> prefix_ors(n);
+    for(int i=0;i<n;i++) {
+        if(i%k==0) {
+            prefix_ors[i] = arr[i];
+        } else {
+            prefix_ors[i] = prefix_ors[i-1] | arr[i];
+        }
     }
 
-    long long 
+    vector<long long> suffix_ors(n);
+    for(int i=n-1;i>=0;i--) {
+        if(i%k==k-1) {
+            suffix_ors[i] = arr[i];
+        } else {
+            suffix_ors[i] = suffix_ors[i+1] | arr[i];
+        }
+    }
+
+    long long ans = 0;
+    for(int j=k-1;j<n;j++) {
+        long long c_or = prefix_ors[j] | suffix_ors[j-k+1];
+        ans ^= c_or;
+    }
+    cout << ans << "\n";
+    return 0;
 }

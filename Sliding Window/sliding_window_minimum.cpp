@@ -9,41 +9,35 @@ int main() {
     cin >> n >> k; 
     cin >> x >> a >> b >> c;
     
-    int capacity = k + 1;
-    vector<long long> q_val(capacity);
-    vector<int> q_idx(capacity);
-    
-    int head = 0, tail = 0;
-
-    long long current_x = x;
-    long long res = 0;
-
+    vector<long long> arr(n);
     for(int i=0;i<n;i++) {
-        if(head != tail && q_idx[head] <= i-k) {
-            head = (head + 1) % capacity;
-        }
-
-        while (head != tail) {
-            int back_idx = (tail - 1 + capacity) % capacity;
-            
-            if (q_val[back_idx] >= current_x) {
-                tail = back_idx; 
-            } else {
-                break;
-            }
-        }
-
-        q_val[tail] = current_x;
-        q_idx[tail] = i;
-        tail = (tail + 1) % capacity;
-
-        if(i >= k-1) {
-            res ^= q_val[head];
-        }
-
-        current_x = (current_x*a + b) % c;
+        if(i==0)
+            arr[i] = x;
+        else
+            arr[i] = (arr[i-1] * a + b) % c;
     }
-    
-    cout << res << "\n";
+
+    int i=0;
+    long long ans = 0;
+    deque<pair<int, int>> q;
+    for(int j=0;j<n;j++) {
+        while(!q.empty() && q.back().first > arr[j]) {
+            q.pop_back();
+        }
+
+        q.push_back({arr[j], j});
+
+        if(j-i+1 < k)
+            continue;
+        else {
+            ans = ans ^ q.front().first;
+
+            if(q.front().second == i) {
+                q.pop_front();
+            }
+            i++;
+        }
+    }
+    cout << ans << "\n";
     return 0;
 }

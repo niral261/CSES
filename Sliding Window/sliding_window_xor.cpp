@@ -9,24 +9,30 @@ int main() {
     cin >> n >> k;
     cin >> x >> a >> b >> c;
 
-    long long current_x = x;
-    long long res = 0;
-
-    long long n_minus_k = n - k;
-
-    for(long long i=0;i<n;i++) {
-        long long left_bound = max(0LL, i-k+1);
-        long long right_bound = min(n_minus_k, i);
-
-        long long w_count = right_bound - left_bound + 1;
-        
-        if(w_count%2 == 1)
-            res ^= current_x;
-
-        current_x = (current_x*a + b) % c;
+    vector<long long> arr(n);
+    for(int i=0;i<n;i++) {
+        if(i==0)
+            arr[i] = x;
+        else
+            arr[i] = (arr[i-1] * a + b) % c;
     }
+    
+    int i=0;
+    long long ans = 0;
+    long long wxor = 0;
 
-    cout << res << "\n";
+    for(int j=0;j<n;j++) {
+        wxor ^= arr[j];
+
+        if(j-i+1 < k)
+            continue;
+        else {
+            ans ^= wxor;
+            wxor ^= arr[i];
+            i++;
+        }
+    }
+    cout << ans << "\n";
     return 0;
 }
 
